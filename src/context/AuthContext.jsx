@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const isAdmin = () => user?.role === 'ADMIN';
+  const isAdmin = () => user?.role === 'ADMIN' || user?.is_staff || user?.is_superuser;
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, isAdmin }}>

@@ -7,6 +7,8 @@ const Navbar = () => {
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
+  if (!user) return null;
+
   const initials = user
     ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}`.toUpperCase() || user.username?.[0]?.toUpperCase()
     : '?';
