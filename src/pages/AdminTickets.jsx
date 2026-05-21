@@ -47,6 +47,7 @@ const AdminTickets = () => {
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState('');
   const [page, setPage]                 = useState(1);
+  const [pageSize, setPageSize]         = useState(10);
   const [totalPages, setTotal]          = useState(1);
   const [totalCount, setTotalCount]     = useState(0);
   const [filters, setFilters]           = useState({ status: '', priority: '' });
@@ -64,17 +65,17 @@ const AdminTickets = () => {
   const fetchTickets = useCallback(async () => {
     setLoading(true); setError('');
     try {
-      const params = { page };
+      const params = { page, page_size: pageSize };
       if (filters.status)   params.status   = filters.status;
       if (filters.priority) params.priority = filters.priority;
       const res = await getAllTickets(params);
       setTickets(res.data.results || res.data);
       setTotalCount(res.data.count || 0);
-      setTotal(Math.ceil((res.data.count || 0) / 10) || 1);
+      setTotal(Math.ceil((res.data.count || 0) / pageSize) || 1);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load tickets.');
     } finally { setLoading(false); }
-  }, [page, filters]);
+  }, [page, pageSize, filters]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
 
@@ -319,6 +320,15 @@ const AdminTickets = () => {
           </div>
         )}
 
+        {/* Page size selector */}
+        <div className="flex items-center gap-2 mb-4">
+          <label className="text-sm text-slate-300">Page size:</label>
+          <select value={pageSize} onChange={e => { setPageSize(parseInt(e.target.value,10)); setPage(1); }} className="px-2 py-1 bg-[#0f172a] border border-[#334155] rounded-lg text-sm text-slate-300">
+            {[3,5,10,20,50].map(size => (
+              <option key={size} value={size}>{size}</option>
+            ))}
+          </select>
+        </div>
         {/* ── Pagination ── */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-10">
