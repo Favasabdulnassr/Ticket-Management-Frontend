@@ -53,6 +53,7 @@ const AdminTickets = () => {
   const [filters, setFilters]           = useState({ status: '', priority: '', search: '', created_at: '' });
 
   // Modal states
+  const [viewModal, setViewModal]       = useState(null);
   const [resolveModal, setResolveModal] = useState(null);
   const [assignModal, setAssignModal]   = useState(null);
   const [deleteModal, setDeleteModal]   = useState(null);
@@ -298,6 +299,13 @@ const AdminTickets = () => {
                       {/* Actions */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-1.5 flex-wrap">
+                          {/* View */}
+                          <button
+                            onClick={() => setViewModal(ticket)}
+                            className="px-2.5 py-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold rounded-lg hover:bg-blue-500/20 transition-all whitespace-nowrap">
+                            View
+                          </button>
+
                           {/* Assign */}
                           <button
                             onClick={() => { setAssignModal(ticket); setAssignedTo(ticket.assigned_to ? String(ticket.assigned_to) : ''); }}
@@ -358,6 +366,39 @@ const AdminTickets = () => {
           </div>
         )}
       </div>
+
+      {/* ══ VIEW MODAL ═════════════════════════════════════════════ */}
+      {viewModal && (
+        <Modal
+          title={`Ticket #${viewModal.id}`}
+          subtitle={viewModal.title}
+          onClose={() => setViewModal(null)}
+        >
+          <div className="space-y-4 mb-6">
+            <div>
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Description</h4>
+              <p className="text-sm text-slate-300 bg-[#0f172a] p-3 rounded-lg border border-[#334155] whitespace-pre-wrap leading-relaxed">
+                {viewModal.description}
+              </p>
+            </div>
+            
+            {viewModal.resolution_comment && (
+              <div>
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Resolution Comment</h4>
+                <p className="text-sm text-emerald-400 bg-emerald-500/10 p-3 rounded-lg border border-emerald-500/20 whitespace-pre-wrap leading-relaxed">
+                  {viewModal.resolution_comment}
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-end">
+            <button onClick={() => setViewModal(null)}
+              className="px-5 py-2 bg-[#334155] hover:bg-[#475569] text-white text-sm font-semibold rounded-lg transition-all">
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
 
       {/* ══ RESOLVE MODAL ══════════════════════════════════════════ */}
       {resolveModal && (

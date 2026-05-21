@@ -1,16 +1,47 @@
-# React + Vite
+# Ticket Management System - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for the Help & Support Ticket Management System, built with React and Tailwind CSS. It provides a sleek, responsive, and intuitive interface for both standard users and administrators to interact with support tickets.
 
-Currently, two official plugins are available:
+## Features
+- **Role-Based UI:** Automatic routing and conditional UI elements based on whether the logged-in user is a standard user or an Admin.
+- **Secure Authentication:** Communicates securely with the backend using HttpOnly JWT cookies.
+- **Modern Design:** Utilizes Tailwind CSS for a premium dark-mode aesthetic with smooth micro-animations.
+- **Advanced Filtering:** Built-in table filtering, searching, and pagination controls.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
-## React Compiler
+## Local Setup Instructions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Favasabdulnassr/Ticket-Management-Frontend.git
+   ```
 
-## Expanding the ESLint configuration
+2. **Navigate to the frontend folder**
+   ```bash
+   cd Ticket-Management-Frontend
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Configure API URL (if necessary)**
+   By default, the application is configured to point to a local backend running at `http://localhost:8000/api/v1`. 
+   If your backend is hosted elsewhere, update the `API_BASE_URL` in `src/services/api.js`.
+
+5. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open the Application**
+   Open your browser and navigate to the URL provided in the terminal (usually `http://localhost:5173`).
+
+## Usage Flow
+1. Open the app and navigate to the **Sign Up** page to create a standard user account.
+2. Sign in with the newly created account to create and view your own support tickets.
+3. Sign out, and log in with the **Superuser (Admin)** account you created via the Django backend to view all tickets across the system, assign them, and resolve them.

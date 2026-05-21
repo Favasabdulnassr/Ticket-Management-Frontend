@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { register as registerApi, login as loginApi, getCurrentUser } from '../services/authService';
+import { register as registerApi } from '../services/authService';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [formData, setFormData] = useState({ first_name:'', last_name:'', username:'', email:'', password:'', password_confirm:'' });
   const [errors, setErrors]     = useState({});
   const [apiError, setApiError] = useState('');
@@ -39,14 +38,8 @@ const Register = () => {
     setLoading(true);
     try {
       await registerApi(formData);
-      const tokenRes = await loginApi({ username: formData.username, password: formData.password });
-      // Save tokens so the api interceptor can attach them for getCurrentUser
-      localStorage.setItem('access_token', tokenRes.data.access);
-      localStorage.setItem('refresh_token', tokenRes.data.refresh);
-      
-      const userRes  = await getCurrentUser();
-      login(tokenRes.data, userRes.data);
-      navigate('/dashboard');
+      // Registration successful, redirect user to login
+      navigate('/login');
     } catch (err) {
       const data = err.response?.data;
       if (data?.details && typeof data.details === 'object') {
