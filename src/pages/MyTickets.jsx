@@ -14,14 +14,16 @@ const MyTickets = () => {
   const [page, setPage]        = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotal] = useState(1);
-  const [filters, setFilters]  = useState({ status: '', priority: '' });
+  const [filters, setFilters]  = useState({ status: '', priority: '', search: '', created_at: '' });
 
   const fetchTickets = useCallback(async () => {
     setLoading(true); setError('');
     try {
       const params = { page, page_size: pageSize };
-      if (filters.status)   params.status   = filters.status;
-      if (filters.priority) params.priority = filters.priority;
+      if (filters.status)     params.status     = filters.status;
+      if (filters.priority)   params.priority   = filters.priority;
+      if (filters.search)     params.search     = filters.search;
+      if (filters.created_at) params.created_at = filters.created_at;
       const res = await getMyTickets(params);
       setTickets(res.data.results || res.data);
       setTotal(Math.ceil((res.data.count || 0) / pageSize) || 1);
@@ -59,14 +61,20 @@ const MyTickets = () => {
 
         {/* Filters */}
         <div className="flex items-center gap-3 mb-6 flex-wrap">
+          <input type="text" name="search" value={filters.search} onChange={handleFilter} placeholder="Search tickets..." 
+            className="px-3.5 py-2 bg-[#0f172a] border border-[#334155] rounded-lg text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-indigo-500 transition-all min-w-[200px]" />
+            
+          <input type="date" name="created_at" value={filters.created_at} onChange={handleFilter}
+            className="px-3.5 py-2 bg-[#0f172a] border border-[#334155] rounded-lg text-sm text-slate-300 outline-none focus:border-indigo-500 transition-all cursor-pointer" />
+
           <select name="status" value={filters.status} onChange={handleFilter} className={selectCls}>
             {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s || 'All Statuses'}</option>)}
           </select>
           <select name="priority" value={filters.priority} onChange={handleFilter} className={selectCls}>
             {PRIORITY_OPTIONS.map(p => <option key={p} value={p}>{p || 'All Priorities'}</option>)}
           </select>
-          {(filters.status || filters.priority) && (
-            <button onClick={() => { setFilters({ status:'', priority:'' }); setPage(1); }}
+          {(filters.status || filters.priority || filters.search || filters.created_at) && (
+            <button onClick={() => { setFilters({ status:'', priority:'', search:'', created_at:'' }); setPage(1); }}
               className="px-3 py-2 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold rounded-lg hover:bg-red-500/20 transition-all">
               Clear ✕
             </button>

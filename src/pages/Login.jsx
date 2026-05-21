@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { login as loginApi, getCurrentUser } from '../services/authService';
+import { login as loginApi } from '../services/authService';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,14 +31,11 @@ const Login = () => {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setLoading(true);
     try {
-      const tokenRes = await loginApi(formData);
-      // Save tokens so the api interceptor can attach them for getCurrentUser
-      localStorage.setItem('access_token', tokenRes.data.access);
-      localStorage.setItem('refresh_token', tokenRes.data.refresh);
+      const loginRes = await loginApi(formData);
+      const userData = loginRes.data.user;
       
-      const userRes  = await getCurrentUser();
-      login(tokenRes.data, userRes.data);
-      const isUserAdmin = userRes.data.role === 'ADMIN' || userRes.data.is_staff || userRes.data.is_superuser;
+      login(userData);
+      const isUserAdmin = userData.role === 'ADMIN' || userData.is_staff || userData.is_superuser;
       navigate(isUserAdmin ? '/admin/tickets' : '/dashboard');
     } catch (err) {
       setApiError(err.response?.data?.message || err.response?.data?.detail || 'Invalid username or password.');

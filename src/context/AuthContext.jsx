@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { getCurrentUser } from '../services/authService';
+import { getCurrentUser, logout as logoutApi } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -8,30 +8,25 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      getCurrentUser()
-        .then((res) => setUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    // Try to fetch current user (backend will check for the cookie)
+    getCurrentUser()
+      .then((res) => setUser(res.data))
+      .catch(() => {
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  const login = (tokens, userData) => {
-    localStorage.setItem('access_token', tokens.access);
-    localStorage.setItem('refresh_token', tokens.refresh);
+  const login = (userData) => {
     setUser(userData);
   };
 
-  const logout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+  const logout = async () => {
+    try {
+      await logoutApi();
+    } catch (error) {
+      console.error('Logout error', error);
+    }
     setUser(null);
   };
 
